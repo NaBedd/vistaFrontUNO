@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UNO Master — Multijugador</title>
+  <meta name="description" content="Cliente web multijugador en tiempo real para UNO sobre WebSockets." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;600;700&display=swap" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app">
+    <!-- ============== SETUP ============== -->
+    <section id="screen-setup" class="screen active">
+      <div class="panel">
+        <div class="uno-logo">UNO</div>
+        <h1>UNO Master</h1>
+        <p class="muted">Cliente multijugador en tiempo real. Necesita 4 jugadores conectados.</p>
+        <form id="form-setup">
+          <label>
+            <span>Tu nombre</span>
+            <input id="input-name" type="text" maxlength="20" required placeholder="Carlos" />
+          </label>
+          <label>
+            <span>Servidor WebSocket</span>
+            <input id="input-url" type="text" required placeholder="ws://localhost:3000" />
+          </label>
+          <button type="submit" class="btn-uno">Entrar al Lobby</button>
+          <p id="setup-status" class="muted small"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============== LOBBY ============== -->
+    <section id="screen-lobby" class="screen">
+      <div class="uno-logo">UNO</div>
+      <h1>Sala de espera</h1>
+      <p class="muted">Esperando jugadores... <span id="lobby-count">0</span>/4</p>
+      <div id="lobby-slots" class="lobby-grid"></div>
+      <button id="btn-leave-lobby" class="btn-uno destructive">Salir</button>
+    </section>
+
+    <!-- ============== GAME ============== -->
+    <section id="screen-game" class="screen">
+      <header class="game-header">
+        <div class="header-side">
+          <div class="uno-logo small">UNO</div>
+          <div class="muted small">Sentido: <span id="game-direction" class="mono"></span></div>
+        </div>
+        <div class="header-center">
+          <div class="muted upper">Turno actual</div>
+          <div id="game-turn" class="turn"></div>
+        </div>
+        <div class="header-side right">
+          <div class="muted small">Cartas: <span id="game-handcount" class="mono">0</span></div>
+          <div id="game-dijouno" class="accent hidden">¡UNO cantado!</div>
+        </div>
+      </header>
+
+      <section class="table">
+        <div class="table-cards">
+          <button id="btn-draw" class="card-slot" aria-label="Robar carta">
+            <img id="img-deck" src="assets/card_back.png" alt="Mazo" />
+            <span class="card-hint">Robar</span>
+          </button>
+          <div class="card-slot">
+            <img id="img-top" src="assets/card_back.png" alt="Carta en mesa" />
+          </div>
+        </div>
+        <p id="game-log" class="muted center"></p>
+        <div id="botonera-uno" class="botonera hidden">
+          <button id="btn-uno" class="btn-uno yellow">¡UNO!</button>
+          <button id="btn-corte" class="btn-uno red">¡Corte!</button>
+        </div>
+        <div id="paused-banner" class="paused-banner hidden">⏸ Juego en pausa — esperando resolución…</div>
+      </section>
+
+      <footer class="hand-area">
+        <div class="muted upper hand-title">Tu mano</div>
+        <div id="hand" class="hand"></div>
+      </footer>
+
+      <aside class="log-panel">
+        <div class="muted upper bold">Historial</div>
+        <ul id="log-list"></ul>
+      </aside>
+    </section>
+
+    <!-- ============== MODALES ============== -->
+    <div id="modal-wild" class="modal hidden">
+      <div class="modal-card">
+        <h2>Elige un color</h2>
+        <p class="muted small">El comodín cambiará al color que elijas.</p>
+        <div class="color-grid">
+          <button data-color="Rojo" class="color-btn red">Rojo</button>
+          <button data-color="Amarillo" class="color-btn yellow">Amarillo</button>
+          <button data-color="Verde" class="color-btn green">Verde</button>
+          <button data-color="Azul" class="color-btn blue">Azul</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-popup" class="modal hidden">
+      <div class="modal-card">
+        <div class="big-emoji">⚠️</div>
+        <h2>¡Atención!</h2>
+        <p id="popup-message"></p>
+        <button id="btn-popup-resolve" class="btn-uno full">Continuar</button>
+      </div>
+    </div>
+
+    <div id="modal-gameover" class="modal hidden">
+      <div class="modal-card">
+        <div class="big-emoji">🏆</div>
+        <h2>Fin del juego</h2>
+        <p id="gameover-message"></p>
+        <button id="btn-gameover-reset" class="btn-uno full">Volver al inicio</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
