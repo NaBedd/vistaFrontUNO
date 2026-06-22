@@ -12,7 +12,7 @@ const VALUE_MAP = {
 };
 const COLORS = ['Rojo', 'Amarillo', 'Verde', 'Azul'];
 
-const DEFAULT_WS = 'ws://localhost:3000';
+const DEFAULT_WS = 'ws://backenduno-ajic.onrender.com';
 
 /** Devuelve la ruta de imagen para una carta del servidor. */
 function cardImage(card) {
